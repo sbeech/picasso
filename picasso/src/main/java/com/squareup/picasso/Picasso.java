@@ -842,9 +842,10 @@ public class Picasso {
       return this;
     }
 
-    /** Set the delay in milliseconds for {@link Dispatcher} batches.
-     *  Changing this value to a lower number allows images stored on disk
-     *  to be loaded faster.
+    /**
+     * Set the delay in milliseconds for {@link Dispatcher} batches.
+     * Changing this value to a lower number allows images stored on disk
+     * to be loaded faster.
      */
     public Builder batchDelay(int delay) {
       this.batchDelay = delay;
