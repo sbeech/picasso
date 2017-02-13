@@ -15,6 +15,14 @@
  */
 package com.squareup.picasso;
 
+import com.squareup.picasso.NetworkRequestHandler.ContentLengthException;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.robolectric.RobolectricGradleTestRunner;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,14 +30,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
-import com.squareup.picasso.NetworkRequestHandler.ContentLengthException;
+
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.robolectric.RobolectricGradleTestRunner;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static android.content.Intent.ACTION_AIRPLANE_MODE_CHANGED;
@@ -580,6 +583,6 @@ public class DispatcherTest {
     when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(connectivityManager);
     when(context.checkCallingOrSelfPermission(anyString())).thenReturn(
         scansNetworkChanges ? PERMISSION_GRANTED : PERMISSION_DENIED);
-    return new Dispatcher(context, service, mainThreadHandler, downloader, cache, stats);
+    return new Dispatcher(context, service, mainThreadHandler, downloader, cache, stats, 200);
   }
 }
