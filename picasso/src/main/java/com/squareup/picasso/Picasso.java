@@ -717,6 +717,7 @@ public class Picasso {
     private List<RequestHandler> requestHandlers;
     private Bitmap.Config defaultBitmapConfig;
 
+    private int batchDelay = 200; // ms
     private boolean indicatorsEnabled;
     private boolean loggingEnabled;
 
@@ -841,6 +842,15 @@ public class Picasso {
       return this;
     }
 
+    /** Set the delay in milliseconds for {@link Dispatcher} batches.
+     *  Changing this value to a lower number allows images stored on disk
+     *  to be loaded faster.
+     */
+    public Builder batchDelay(int delay) {
+      this.batchDelay = delay;
+      return this;
+    }
+
     /** Create the {@link Picasso} instance. */
     public Picasso build() {
       Context context = this.context;
@@ -860,7 +870,7 @@ public class Picasso {
 
       Stats stats = new Stats(cache);
 
-      Dispatcher dispatcher = new Dispatcher(context, service, HANDLER, downloader, cache, stats);
+      Dispatcher dispatcher = new Dispatcher(context, service, HANDLER, downloader, cache, stats, batchDelay);
 
       return new Picasso(context, dispatcher, cache, listener, transformer, requestHandlers, stats,
           defaultBitmapConfig, indicatorsEnabled, loggingEnabled);

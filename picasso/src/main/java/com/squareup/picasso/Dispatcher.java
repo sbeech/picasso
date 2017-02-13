@@ -76,7 +76,6 @@ class Dispatcher {
   static final int REQUEST_BATCH_RESUME = 13;
 
   private static final String DISPATCHER_THREAD_NAME = "Dispatcher";
-  private static final int BATCH_DELAY = 200; // ms
 
   final DispatcherThread dispatcherThread;
   final Context context;
@@ -90,6 +89,7 @@ class Dispatcher {
   final Handler mainThreadHandler;
   final Cache cache;
   final Stats stats;
+  final int batchDelay; // ms
   final List<BitmapHunter> batch;
   final NetworkBroadcastReceiver receiver;
   final boolean scansNetworkChanges;
@@ -97,7 +97,7 @@ class Dispatcher {
   boolean airplaneMode;
 
   Dispatcher(Context context, ExecutorService service, Handler mainThreadHandler,
-      Downloader downloader, Cache cache, Stats stats) {
+      Downloader downloader, Cache cache, Stats stats, int batchDelay) {
     this.dispatcherThread = new DispatcherThread();
     this.dispatcherThread.start();
     Utils.flushStackLocalLeaks(dispatcherThread.getLooper());
@@ -112,6 +112,7 @@ class Dispatcher {
     this.mainThreadHandler = mainThreadHandler;
     this.cache = cache;
     this.stats = stats;
+    this.batchDelay = batchDelay;
     this.batch = new ArrayList<>(4);
     this.airplaneMode = Utils.isAirplaneModeOn(this.context);
     this.scansNetworkChanges = hasPermission(context, Manifest.permission.ACCESS_NETWORK_STATE);
@@ -433,7 +434,7 @@ class Dispatcher {
     }
     batch.add(hunter);
     if (!handler.hasMessages(HUNTER_DELAY_NEXT_BATCH)) {
-      handler.sendEmptyMessageDelayed(HUNTER_DELAY_NEXT_BATCH, BATCH_DELAY);
+      handler.sendEmptyMessageDelayed(HUNTER_DELAY_NEXT_BATCH, batchDelay);
     }
   }
 
